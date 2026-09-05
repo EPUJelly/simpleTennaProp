@@ -7,6 +7,7 @@ local faces = {
     love.graphics.newImage('images/tennasmile1.png'),
     love.graphics.newImage('images/tennasmile2.png'),
     love.graphics.newImage('images/tennawhatever.png'),
+    love.graphics.newImage('images/tennaPog.png'),
 }
 
 local introImages = {
@@ -139,6 +140,10 @@ local muteIcon = love.graphics.newImage('images/muteOn.png')
 
 local unmuteIcon = love.graphics.newImage('images/muteOff.png')
 
+local pauseIcon = love.graphics.newImage('images/pause.png')
+
+local playIcon = love.graphics.newImage('images/play.png')
+
 local tvTimeAudio = love.audio.newSource('sounds/snd_its_tv_time.wav', 'static')
 
 local expression = 1
@@ -146,6 +151,10 @@ local expression = 1
 local isPlayingMuteAnim = false
 
 local muteAnimTimer = 1
+
+local isPlayingPauseAnim = false
+
+local pauseAnimTimer = 1
 
 local tvTimeIndex = 1
 
@@ -200,6 +209,8 @@ function love.load()
 
     muteIcon:setFilter('nearest', 'nearest')
     unmuteIcon:setFilter('nearest', 'nearest')
+    pauseIcon:setFilter('nearest', 'nearest')
+    playIcon:setFilter('nearest', 'nearest')
     if mute then
         vol = 0
     else
@@ -280,6 +291,7 @@ function love.keypressed(key, scancode, isrepeat)
     end
     if key == "p" then
         autoPlayAnim = not autoPlayAnim
+        isPlayingPauseAnim = true
     end
     if autoPlayAnim == false then
         if key == "f" then
@@ -324,6 +336,16 @@ function love.update()
             muteAnimTimer = 1
         end
     end
+
+    if isPlayingPauseAnim then
+        if pauseAnimTimer < 60 then
+            pauseAnimTimer = pauseAnimTimer + 1
+        else
+            isPlayingPauseAnim = false
+            pauseAnimTimer = 1
+        end
+    end
+
     if playTvTime then
         if tvTimeIndex == 1 then
             tvTimeAudio:setVolume(vol)
@@ -395,6 +417,28 @@ function love.draw()
             64)
         end
     end
+
+    if isPlayingPauseAnim then
+        love.graphics.setColor(1, 1, 1, 1- remap(pauseAnimTimer, 1, 60, 0, 1))
+        if autoPlayAnim then
+            love.graphics.draw(playIcon, sw / 2,
+            sh / 2,
+            0,
+            scaleMute,
+            scaleMute,
+            64,
+            64)
+        else
+            love.graphics.draw(pauseIcon, sw / 2,
+            sh / 2,
+            0,
+            scaleMute,
+            scaleMute,
+            64,
+            64)
+        end
+    end
+
 
     if debug then
         love.graphics.setColor(0, 0, 0)

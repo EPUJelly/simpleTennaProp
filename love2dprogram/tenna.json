@@ -2,6 +2,6 @@
   "mute": false,
   "fullscreen": false,
   "fillBg": true,
-  "debug": false,
+  "debug": true,
   "playIntro": true
 }
